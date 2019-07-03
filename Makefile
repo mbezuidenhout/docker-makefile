@@ -32,10 +32,10 @@ help: ## This help.
 # DOCKER TASKS
 # Build the container
 build: ## Build the container
-	docker build -t $(APP_NAME) $(BUILDOPTS) ./src
+	docker build -t $(DOCKER_REPO)/$(APP_NAME) $(BUILDOPTS) ./src
 
 build-nc: ## Build the container without caching
-	docker build --no-cache -t $(APP_NAME) ./src
+	docker build --no-cache -t $(DOCKER_REPO)/$(APP_NAME) ./src
 
 run: ## Run container with options in `$(cnf)`
 	docker run -ti --rm --env-file=$(cnf) --name="$(APP_NAME)" $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
@@ -62,13 +62,9 @@ publish-version: tag-version ## Publish the `{version}` taged container to ECR
 # Docker tagging
 tag: tag-latest tag-version ## Generate container tags for the `{version}` ans `latest` tags
 
-tag-latest: ## Generate container `{version}` tag
-	@echo 'create tag latest'
-	docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):latest
-
 tag-version: ## Generate container `latest` tag
 	@echo 'create tag $(VERSION)'
-	docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
+	docker tag $(DOCKER_REPO)/$(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 
 version: ## Output the current version
 	@echo $(VERSION)
