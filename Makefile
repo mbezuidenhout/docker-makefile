@@ -11,7 +11,7 @@ include $(cnf)
 export $(shell sed 's/=.*//' $(cnf))
 
 # grep the version from the mix file
-VERSION=$(shell ./version.sh)
+VERSION=$(shell uname -m)
 
 # Get the app name from the current directory and parent directory
 PWD=$(shell pwd)
