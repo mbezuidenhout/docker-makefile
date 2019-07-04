@@ -12,6 +12,12 @@ export $(shell sed 's/=.*//' $(cnf))
 
 # grep the version from the mix file
 VERSION=$(shell uname -m)
+ifeq ($(VERSION),x86_64)
+	VERSION=amd64
+endif
+ifneq (,$(findstring arm,$(VERSION)))
+	VERSION=arm
+endif
 
 # Get the app name from the current directory and parent directory
 PWD=$(shell pwd)
