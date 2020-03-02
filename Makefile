@@ -38,10 +38,10 @@ help: ## This help.
 # DOCKER TASKS
 # Build the container
 build: ## Build the container
-	docker build -t $(APP_NAME) $(BUILDOPTS) ./src
+	docker build -t $(DOCKER_REPO)/$(APP_NAME) $(BUILDOPTS) ./src
 
 build-nc: ## Build the container without caching
-	docker build --no-cache -t $(APP_NAME) ./src
+	docker build --no-cache -t $(DOCKER_REPO)/$(APP_NAME) ./src
 
 run: ## Run container with options in `$(cnf)`
 	docker run -ti --rm --env-file=$(cnf) --name="$(APP_NAME)" $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
@@ -52,7 +52,7 @@ up: build run ## Run container on port configured in `config.env` (Alias to run)
 stop: ## Stop and remove a running container
 	docker stop $(APP_NAME); docker rm $(APP_NAME)
 
-release: build-nc publish ## Make a release by building and publishing the `{version}` ans `latest` tagged containers to ECR
+release: build-nc publish ## Make a release by building and publishing the `{version}` and `latest` tagged containers to ECR
 
 # Docker publish
 publish: repo-login publish-latest publish-version ## Publish the `{version}` ans `latest` tagged containers to ECR
