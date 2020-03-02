@@ -46,6 +46,9 @@ build-nc: ## Build the container without caching
 run: ## Run container with options in `$(cnf)`
 	docker run -ti --rm --env-file=$(cnf) --name="$(APP_NAME)" $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 
+manifest: ## Create and push manifest
+	docker manifest create $(DOCKER_REPO)/$(APP_NAME):latest $(DOCKER_REPO)/$(APP_NAME):amd64 $(DOCKER_REPO)/$(APP_NAME):arm
+	docker manifest --purge $(DOCKER_REPO)/$(APP_NAME):latest
 
 up: build run ## Run container on port configured in `config.env` (Alias to run)
 
