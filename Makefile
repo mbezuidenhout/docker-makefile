@@ -63,11 +63,11 @@ repo-login:
 # Docker publish
 publish: repo-login publish-latest publish-version ## Publish the `{version}` and `latest` tagged containers to ECR
 
-publish-latest: tag-latest ## Publish the `latest` taged container to ECR
+publish-latest: tag-latest ## Publish the `latest` tagged container to ECR
 	@echo 'publish latest to $(DOCKER_REPO)'
 	docker push $(DOCKER_REPO)/$(APP_NAME):latest
 
-publish-version: tag-version ## Publish the `{version}` taged container to ECR
+publish-version: tag-version ## Publish the `{version}` tagged container to ECR
 	@echo 'publish $(VERSION) to $(DOCKER_REPO)'
 	docker push $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 
