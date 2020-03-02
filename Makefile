@@ -57,8 +57,11 @@ stop: ## Stop and remove a running container
 
 release: build-nc publish ## Make a release by building and publishing the `{version}` and `latest` tagged containers to ECR
 
+repo-login:
+	docker login
+
 # Docker publish
-publish: repo-login publish-latest publish-version ## Publish the `{version}` ans `latest` tagged containers to ECR
+publish: repo-login publish-latest publish-version ## Publish the `{version}` and `latest` tagged containers to ECR
 
 publish-latest: tag-latest ## Publish the `latest` taged container to ECR
 	@echo 'publish latest to $(DOCKER_REPO)'
@@ -69,7 +72,7 @@ publish-version: tag-version ## Publish the `{version}` taged container to ECR
 	docker push $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 
 # Docker tagging
-tag: tag-latest tag-version ## Generate container tags for the `{version}` ans `latest` tags
+tag: tag-latest tag-version ## Generate container tags for the `{version}` and `latest` tags
 
 tag-latest: ## Generate container `{version}` tag
 	@echo 'create tag latest'
