@@ -48,7 +48,7 @@ run: ## Run container with options in `$(cnf)`
 
 manifest: ## Create and push manifest
 	docker manifest create $(DOCKER_REPO)/$(APP_NAME):latest $(DOCKER_REPO)/$(APP_NAME):amd64 $(DOCKER_REPO)/$(APP_NAME):arm
-	docker manifest --purge $(DOCKER_REPO)/$(APP_NAME):latest
+	docker manifest push --purge $(DOCKER_REPO)/$(APP_NAME):latest
 
 up: build run ## Run container on port configured in `config.env` (Alias to run)
 
