@@ -24,10 +24,20 @@ PWD=$(shell pwd)
 DOCKER_REPO=$(shell basename $(shell dirname ${PWD}))
 APP_NAME=$(shell basename ${PWD})
 
+DOCKERFILES:=$(shell find . -mindepth 2 -name Dockerfile -type f)
+DIRS:=$(foreach m,$(DOCKERFILES),$(realpath $(dir $(m))))
+
 # HELP
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
+
+.PHONY: all
+all: $(DIRS)
+
+.PHONY: $(DIRS)
+$(DIRS):
+	docker build -t $(DOCKER_REPO)/$(APP_NAME) $(BUILDOPTS) $@
 
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
