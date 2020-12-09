@@ -1,7 +1,7 @@
 # Makefile for docker images
 
 # Build options
-# You can override the build options with `make BUILDOPTS="--OPTION_NAME=OPTION_VALUE
+# You can override the build options with `make BUILDOPTS="--OPTION_NAME=OPTION_VALUE"`
 BUILDOPTS ?= '--pull'
 
 # import config.
@@ -37,7 +37,9 @@ help: ## This help.
 
 # DOCKER TASKS
 # Build the container
-build: ## Build the container
+build: build-latest tag-version ## Build the container
+
+build-latest: ## Build image without tagging the platform
 	docker build -t $(DOCKER_REPO)/$(APP_NAME) $(BUILDOPTS) ./src
 
 build-nc: ## Build the container without caching
@@ -74,13 +76,9 @@ publish-version: tag-version ## Publish the `{version}` tagged container to ECR
 # Docker tagging
 tag: tag-latest tag-version ## Generate container tags for the `{version}` and `latest` tags
 
-tag-latest: ## Generate container `{version}` tag
-	@echo 'create tag latest'
-	docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):latest
-
 tag-version: ## Generate container `latest` tag
 	@echo 'create tag $(VERSION)'
-	docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
+	docker tag $(DOCKER_REPO)/$(APP_NAME):latest $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 
 version: ## Output the current version
 	@echo $(VERSION)
