@@ -4,6 +4,9 @@
 # You can override the build options with `make BUILDOPTS="--OPTION_NAME=OPTION_VALUE"`
 BUILDOPTS ?= '--pull'
 
+# Platform options
+PLATFORM ?= 'linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6'
+
 # import config.
 # You can change the default config with `make cnf="config_special.env" build`
 cnf ?= config.env
@@ -25,25 +28,30 @@ DOCKER_REPO=$(shell basename $(shell dirname ${PWD}))
 APP_NAME=$(shell basename ${PWD})
 
 DOCKERFILES:=$(shell find . -mindepth 2 -name Dockerfile -type f)
-DIRS:=$(foreach m,$(DOCKERFILES),$(realpath $(dir $(m))))
+DIRS:=$(foreach m,$(DOCKERFILES),$(basename $(dir $(m))))
+IMG_VERSION=$(shell basename $@)
+
+src/: IMG_VERSION = latest
+ifeq ($@,src)
+	IMG_VERSION=latest
+endif
 
 # HELP
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
+help: ## This help.
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .PHONY: all
 all: $(DIRS)
 
 .PHONY: $(DIRS)
 $(DIRS):
-	docker build -t $(DOCKER_REPO)/$(APP_NAME) $(BUILDOPTS) $@
+	@echo $(IMG_VERSION)
+	docker buildx build --platform $(PLATFORM) -t $(DOCKER_REPO)/$(APP_NAME):$(IMG_VERSION) $(BUILDOPTS) $@
 
-help: ## This help.
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
-
-.DEFAULT_GOAL := build
-
+.DEFAULT_GOAL := build-latest
 
 # DOCKER TASKS
 # Build the container
