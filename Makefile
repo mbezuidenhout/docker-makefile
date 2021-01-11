@@ -43,25 +43,15 @@ endif
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
+.DEFAULT_GOAL := all
+
 .PHONY: all
-all: $(DIRS)
+all: $(DIRS) ## Build images for $(PLATFORM) platforms and push to docker hub
 
 .PHONY: $(DIRS)
 $(DIRS):
 	@echo $(IMG_VERSION)
-	docker buildx build --platform $(PLATFORM) -t $(DOCKER_REPO)/$(APP_NAME):$(IMG_VERSION) $(BUILDOPTS) $@
-
-.DEFAULT_GOAL := build-latest
-
-# DOCKER TASKS
-# Build the container
-build: build-latest tag-version ## Build the container
-
-build-latest: ## Build image without tagging the platform
-	docker build -t $(DOCKER_REPO)/$(APP_NAME) $(BUILDOPTS) ./src
-
-build-nc: ## Build the container without caching
-	docker build --no-cache -t $(DOCKER_REPO)/$(APP_NAME) ./src
+	docker buildx build --push --platform $(PLATFORM) -t $(DOCKER_REPO)/$(APP_NAME):$(IMG_VERSION) $(BUILDOPTS) $@
 
 run: ## Run container with options in `$(cnf)`
 	docker run -ti --rm --env-file=$(cnf) --name="$(APP_NAME)" $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
