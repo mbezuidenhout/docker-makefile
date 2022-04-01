@@ -5,7 +5,7 @@
 BUILDOPTS ?= 
 
 # Platform options
-PLATFORM ?= 'linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/mips64le,linux/ppc64le,linux/390x'
+PLATFORM ?= 'linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/mips64le,linux/ppc64le,linux/s390x'
 
 # import config.
 # You can change the default config with `make cnf="config_special.env" build`
